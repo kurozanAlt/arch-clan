@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Official ARCH Clan website">
+  <title>WELCOME TO ARCH</title>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      min-height:100vh; overflow-x:hidden; overflow-y:auto;
+      font-family:Arial,sans-serif;color:#fff;
+      background:radial-gradient(circle at top,#172554 0%,#050816 45%,#02030a 100%);
+    }
+    .container{max-width:900px;margin:auto;padding:70px 22px}
+    .logo{font-size:72px;font-weight:900;letter-spacing:12px;text-align:center;
+      text-shadow:0 0 20px #00eaff,0 0 45px #7c3aed;margin-bottom:15px}
+    h1{text-align:center;font-size:clamp(38px,8vw,76px);margin-bottom:22px;
+      background:linear-gradient(90deg,#00eaff,#a855f7,#ff3cac);
+      -webkit-background-clip:text;background-clip:text;color:transparent}
+    .intro{text-align:center;line-height:1.8;color:#dbeafe;font-size:18px}
+    .card{margin-top:45px;padding:30px;border:1px solid #334155;border-radius:22px;
+      background:rgba(15,23,42,.72);box-shadow:0 0 35px rgba(0,234,255,.12)}
+    .motto{text-align:center;font-weight:bold;font-size:20px;margin:25px 0}
+    .points{line-height:2;color:#cbd5e1;margin:20px auto;max-width:600px}
+    #join{text-align:center}
+    .join-title{font-size:34px;margin-bottom:12px}
+    .join-text{color:#cbd5e1;margin-bottom:22px}
+    .turnstile{display:flex;justify-content:center;margin:20px 0}
+    #discordBtn{
+      display:inline-block;padding:15px 30px;border-radius:12px;
+      background:linear-gradient(90deg,#5865f2,#7c3aed);color:white;
+      text-decoration:none;font-weight:bold;transition:.2s;
+      opacity:.45;pointer-events:none
+    }
+    #discordBtn.ready{opacity:1;pointer-events:auto}
+    #status{margin:14px 0;color:#94a3b8;min-height:22px}
+    footer{text-align:center;color:#64748b;margin-top:50px;font-size:14px}
+    @media(max-width:600px){
+      .container{padding:45px 16px}.logo{font-size:48px;letter-spacing:7px}
+      .card{padding:22px}.intro{font-size:16px}
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="logo">ARCH</div>
+    <h1>WELCOME TO ARCH</h1>
+
+    <p class="intro">
+      Ini adalah clan yang baru saja memulai pertualangannya.
+      Kami mungkin masih baru, tetapi kami datang dengan semangat yang besar.
+    </p>
+
+    <section class="card">
+      <p class="intro">
+        Setiap kemenangan akan menjadi kenangan, dan setiap kekalahan akan menjadi pelajaran.
+        Di sini kami bukan hanya sekumpulan pemain. Kami adalah sebuah tim yang tumbuh,
+        berjuang, dan berkembang bersama.
+      </p>
+
+      <p class="motto">⚔️ ONE TEAM • ONE JOURNEY • ONE LEGACY ⚔️</p>
+
+      <div class="points">
+        🔥 Tidak takut memulai dari nol.<br>
+        🛡️ Tidak menyerah ketika jatuh.<br>
+        👑 Terus maju sampai nama ARCH dikenal.
+      </div>
+
+      <div id="join">
+        <h2 class="join-title">JOIN ARCH DI SINI</h2>
+        <p class="join-text">Bergabunglah bersama kami dan mulai petualanganmu bersama ARCH!</p>
+
+        <div class="turnstile">
+          <div class="cf-turnstile"
+               data-sitekey="MASUKKAN_SITE_KEY_DI_SINI"
+               data-callback="turnstileSuccess"
+               data-expired-callback="turnstileExpired"
+               data-error-callback="turnstileError"></div>
+        </div>
+
+        <p id="status">Verifikasi untuk membuka tombol Discord.</p>
+        <a id="discordBtn" href="https://discord.gg/VMNZyXuvwb"
+           target="_blank" rel="noopener noreferrer">JOIN DISCORD ARCH</a>
+      </div>
+    </section>
+
+    <footer>© 2026 ARCH Clan — One Team, One Journey, One Legacy.</footer>
+  </main>
+
+  <script>
+    async function turnstileSuccess(token) {
+      const status = document.getElementById("status");
+      const button = document.getElementById("discordBtn");
+      status.textContent = "Memeriksa keamanan...";
+
+      try {
+        const response = await fetch("/verify", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({token})
+        });
+        const result = await response.json();
+
+        if (result.success) {
+          button.classList.add("ready");
+          status.textContent = "✓ Verifikasi berhasil. Kamu bisa bergabung ke Discord.";
+        } else {
+          status.textContent = "Verifikasi gagal. Silakan coba lagi.";
+          button.classList.remove("ready");
+        }
+      } catch {
+        status.textContent = "Server tidak dapat dihubungi. Coba lagi nanti.";
+      }
+    }
+
+    function turnstileExpired() {
+      document.getElementById("discordBtn").classList.remove("ready");
+      document.getElementById("status").textContent = "Verifikasi kedaluwarsa. Silakan verifikasi lagi.";
+    }
+
+    function turnstileError() {
+      document.getElementById("discordBtn").classList.remove("ready");
+      document.getElementById("status").textContent = "Verifikasi keamanan mengalami masalah.";
+    }
+  </script>
+</body>
+</html>
